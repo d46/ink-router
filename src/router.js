@@ -1,9 +1,10 @@
-import { h, Component } from 'ink'
+import React, {Component} from 'react';
 import PropTypes from 'prop-types'
 import createHistory from 'history/createMemoryHistory'
-import makeBroadcaster from 'ink-broadcast/dist/broadcast'
+// import makeBroadcaster from 'ink-broadcast/dist/broadcast'
+import { Broadcast } from 'react-broadcast';
 
-const Broadcast = makeBroadcaster('router')
+// const Broadcast = makeBroadcaster('router')
 
 export default class Router extends Component {
   static propTypes = {
@@ -55,14 +56,20 @@ export default class Router extends Component {
     }
   }
 
-  handleHistoryAction = location => this.setState({ location })
+  handleHistoryAction = location => {
+    this.setState({ location })
+  }
 
   compareStates = (prev, next) => prev.location.key === next.location.key
 
-  render({ children }, { location }) {
+  render() {
+    const {
+      children , 
+      location
+    } = this.props;
     const broadcastValue = { location, history: this.history }
     return (
-      <Broadcast value={broadcastValue} compareValues={this.compareStates}>
+      <Broadcast channel="router" value={broadcastValue} compareValues={this.compareStates}>
         {children}
       </Broadcast>
     )
